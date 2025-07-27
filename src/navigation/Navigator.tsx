@@ -18,7 +18,12 @@ const Navigator: React.FC = () => {
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Home">
+        <Stack.Navigator
+          initialRouteName="Home"
+          screenOptions={{
+            animation: 'fade',
+          }}
+        >
           <Stack.Screen component={Home} name="Home" options={SCREEN_OPTIONS} />
           <Stack.Screen
             component={Details}

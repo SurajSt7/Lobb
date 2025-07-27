@@ -4,13 +4,15 @@ import React from 'react';
 import { screenHeight, screenWidth } from '../utils/Screen';
 import TextComponent from './TextComponent';
 
-type CustomCardType = {
+export type CustomCardType = {
   thumbnail: string;
   title: string;
   subtitle: string;
   logo: string;
-  onRefreshPress: () => void;
-  onPress: () => void;
+  onRefreshPress?: () => void;
+  onPress?: () => void;
+  fullWidth?: boolean;
+  pressable?: boolean;
 };
 
 const FALLBACK_IMG =
@@ -18,14 +20,23 @@ const FALLBACK_IMG =
 
 const CustomCard: React.FC<CustomCardType> = props => {
   return (
-    <View style={styles.imageContainer}>
+    <TouchableOpacity
+      onPress={props.onPress}
+      activeOpacity={props.pressable ? 0.8 : 1}
+      style={[styles.imageContainer, props.pressable && styles.pressableStyles]}
+    >
       <FastImage
         source={{
           uri: props.thumbnail || FALLBACK_IMG,
           cache: FastImage.cacheControl.immutable,
           priority: FastImage.priority.high,
         }}
-        style={styles.thumbnailStyles}
+        style={[
+          styles.thumbnailStyles,
+          {
+            width: props.fullWidth ? '100%' : screenWidth / 1.1,
+          },
+        ]}
         resizeMode={FastImage.resizeMode.cover}
       />
       <View style={styles.cardBottom}>
@@ -45,39 +56,47 @@ const CustomCard: React.FC<CustomCardType> = props => {
             <TextComponent text={props.subtitle} size={12} />
           </View>
         </View>
-        <TouchableOpacity
-          style={styles.refreshStyles}
-          activeOpacity={0.7}
-          hitSlop={styles.cornerPress}
-          pressRetentionOffset={styles.cornerPress}
-          onPress={props.onRefreshPress}
-        >
-          <TextComponent text="REFRESH" size={12} />
-        </TouchableOpacity>
+        {props.pressable && (
+          <TouchableOpacity
+            style={styles.refreshStyles}
+            activeOpacity={0.7}
+            hitSlop={styles.cornerPress}
+            pressRetentionOffset={styles.cornerPress}
+            onPress={props.onRefreshPress}
+          >
+            <TextComponent
+              text="REFRESH"
+              color="blue"
+              fontWeight="500"
+              size={12}
+            />
+          </TouchableOpacity>
+        )}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
-export default CustomCard;
+export default React.memo(CustomCard);
 
 const styles = StyleSheet.create({
   imageContainer: {
-    borderRadius: 20,
     backgroundColor: '#fff',
+  },
+  pressableStyles: {
     shadowOffset: {
       height: 6,
       width: 5,
     },
     shadowColor: '#5c5c5c75',
     shadowOpacity: 0.6,
-    elevation: 4,
+    elevation: 6,
+    borderRadius: 20,
   },
   thumbnailStyles: {
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
-    height: screenHeight / 2,
-    width: screenWidth / 1.1,
+    height: screenHeight / 2.5,
   },
   leftPart: {
     alignItems: 'center',
@@ -91,7 +110,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  refreshStyles: {},
+  refreshStyles: {
+    backgroundColor: '#C0C0C0',
+    padding: 6,
+    borderRadius: 16,
+  },
   logoStyles: {
     borderRadius: 8,
     height: screenHeight / 25,

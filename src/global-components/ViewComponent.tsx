@@ -21,7 +21,7 @@ const ViewComponent = (props: CommonViewComponentProps) => {
 
   const renderBackground = () => {
     return (
-      <View
+      <SafeAreaView
         style={[
           styles.container,
           {
@@ -31,7 +31,7 @@ const ViewComponent = (props: CommonViewComponentProps) => {
       >
         <StatusBar barStyle={'dark-content'} backgroundColor={'#000'} />
         {children}
-      </View>
+      </SafeAreaView>
     );
   };
 
@@ -55,7 +55,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: Platform.OS === 'ios' ? screenHeight / 14 : 0,
   },
   touchableContainer: {
     flex: 1,

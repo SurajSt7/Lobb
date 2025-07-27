@@ -15,6 +15,7 @@ const Home: React.FC<HomeProps> = props => {
   const { navigation, route } = props;
 
   const [data, setData] = useState<ContentType>();
+  const [loading, setLoading] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
 
   const today = new Date();
@@ -33,11 +34,14 @@ const Home: React.FC<HomeProps> = props => {
   useEffect(() => {
     (async () => {
       try {
+        setLoading(true);
         const token = await generateToken();
         const data = await getDetails(token);
+        setLoading(false);
         setData(data);
         console.log('data: ', data);
       } catch (er) {
+        setLoading(true);
         console.log('Caught an error loading the screen content: ', er);
       }
     })();
@@ -45,6 +49,13 @@ const Home: React.FC<HomeProps> = props => {
 
   const handleRefresh = () => {
     setRefresh(prev => !prev);
+  };
+
+  const handleCardPress = () => {
+    if (loading) {
+      return;
+    }
+    navigation.navigate('Details', data!);
   };
 
   const getInitials = (name: string): string => {
@@ -78,11 +89,12 @@ const Home: React.FC<HomeProps> = props => {
         </View>
         <CustomCard
           logo={data?.logo!}
+          pressable
           thumbnail={data?.thumbNailImage!}
           title={data?.title!}
           subtitle={data?.subTitle!}
           onRefreshPress={handleRefresh}
-          onPress={() => {}}
+          onPress={handleCardPress}
         />
       </View>
     </ViewComponent>
@@ -95,7 +107,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
   },
   rowView: {
     flexDirection: 'row',
