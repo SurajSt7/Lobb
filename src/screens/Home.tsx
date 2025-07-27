@@ -17,18 +17,20 @@ const Home: React.FC<HomeProps> = props => {
   const [data, setData] = useState<ContentType>();
   const [loading, setLoading] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
-
   const today = new Date();
 
-  const options = { weekday: 'long', day: 'numeric' };
-  // @ts-ignore
-  const weekdayDay = today.toLocaleDateString('en-US', options);
+  const weekday = today
+    .toLocaleDateString('en-US', { weekday: 'long' })
+    .toUpperCase();
+
+  const day = today.getDate();
 
   const month = today
     .toLocaleDateString('en-US', { month: 'long' })
     .toUpperCase();
 
-  const formatted = `${weekdayDay} ${month}`.toUpperCase();
+  const formatted = `${weekday} ${day} ${month}`;
+
   console.log(formatted);
 
   useEffect(() => {
