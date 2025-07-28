@@ -1,5 +1,4 @@
 import { URLS, USERTYPE } from '../utils/api';
-import { ContentType } from '../utils/types';
 
 export const getDetails = async (token: string) => {
   if (!token || !token.startsWith('e')) {

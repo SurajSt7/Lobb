@@ -15,8 +15,7 @@ export type CustomCardType = {
   pressable?: boolean;
 };
 
-const FALLBACK_IMG =
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQk0X5YB3ZSGWVqEvI-Eob6iXpcrgZjsKbZnQ&s';
+const FALLBACK_IMG = '../assets/Loading.png';
 
 const CustomCard: React.FC<CustomCardType> = props => {
   return (
@@ -25,20 +24,33 @@ const CustomCard: React.FC<CustomCardType> = props => {
       activeOpacity={props.pressable ? 0.8 : 1}
       style={[styles.imageContainer, props.pressable && styles.pressableStyles]}
     >
-      <FastImage
-        source={{
-          uri: props.thumbnail || FALLBACK_IMG,
-          cache: FastImage.cacheControl.immutable,
-          priority: FastImage.priority.high,
-        }}
-        style={[
-          styles.thumbnailStyles,
-          {
-            width: props.fullWidth ? '100%' : screenWidth / 1.1,
-          },
-        ]}
-        resizeMode={FastImage.resizeMode.cover}
-      />
+      {props.thumbnail ? (
+        <FastImage
+          source={{
+            uri: props.thumbnail,
+            cache: FastImage.cacheControl.immutable,
+            priority: FastImage.priority.high,
+          }}
+          style={[
+            styles.thumbnailStyles,
+            {
+              width: props.fullWidth ? '100%' : screenWidth / 1.1,
+            },
+          ]}
+          resizeMode={FastImage.resizeMode.cover}
+        />
+      ) : (
+        <FastImage
+          source={require(FALLBACK_IMG)}
+          style={[
+            styles.thumbnailStyles,
+            {
+              width: props.fullWidth ? '100%' : screenWidth / 1.1,
+            },
+          ]}
+          resizeMode={FastImage.resizeMode.cover}
+        />
+      )}
       <View style={styles.cardBottom}>
         <View style={styles.leftPart}>
           <View style={styles.logoContainer}>
