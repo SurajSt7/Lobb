@@ -15,6 +15,7 @@ export type CustomCardType = {
   pressable?: boolean;
 };
 
+// Fallback image path for when API images fail to load
 const FALLBACK_IMG = '../assets/Loading.png';
 
 const CustomCard: React.FC<CustomCardType> = props => {
@@ -24,6 +25,7 @@ const CustomCard: React.FC<CustomCardType> = props => {
       activeOpacity={props.pressable ? 0.8 : 1}
       style={[styles.imageContainer, props.pressable && styles.pressableStyles]}
     >
+      {/* Conditional rendering for main image - show fallback if no thumbnail */}
       {props.thumbnail ? (
         <FastImage
           source={{
@@ -34,6 +36,7 @@ const CustomCard: React.FC<CustomCardType> = props => {
           style={[
             styles.thumbnailStyles,
             {
+              // Dynamic width based on fullWidth prop - useful for detail screen
               width: props.fullWidth ? '100%' : screenWidth / 1.1,
             },
           ]}
@@ -57,7 +60,7 @@ const CustomCard: React.FC<CustomCardType> = props => {
             <FastImage
               source={{
                 uri: props.logo,
-                priority: FastImage.priority.normal,
+                priority: FastImage.priority.normal, // Lower priority than main image
                 cache: FastImage.cacheControl.immutable,
               }}
               style={styles.logoStyles}
@@ -89,6 +92,7 @@ const CustomCard: React.FC<CustomCardType> = props => {
   );
 };
 
+// Using memo to prevent unnecessary re-renders when props haven't changed
 export default React.memo(CustomCard);
 
 const styles = StyleSheet.create({

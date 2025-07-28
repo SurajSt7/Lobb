@@ -1,4 +1,4 @@
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import ViewComponent from '../global-components/ViewComponent';
 import TextComponent from '../global-components/TextComponent';
@@ -12,13 +12,17 @@ import CustomCard from '../global-components/CustomCard';
 type HomeProps = NativeStackScreenProps<ScreenTypes, 'Home'>;
 
 const Home: React.FC<HomeProps> = props => {
-  const { navigation, route } = props;
+  const { navigation } = props;
 
+  // Main state for storing the story data from API
   const [data, setData] = useState<ContentType>();
   const [loading, setLoading] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
+
   const today = new Date();
 
+  // Format the date to show like "MONDAY 28 JULY"
+  // Had to use multiple toLocaleDateString calls to get the exact format I wanted
   const weekday = today
     .toLocaleDateString('en-US', { weekday: 'long' })
     .toUpperCase();
@@ -31,17 +35,16 @@ const Home: React.FC<HomeProps> = props => {
 
   const formatted = `${weekday} ${day} ${month}`;
 
-  console.log(formatted);
-
+  // Load data when component mounts or when refresh changes
   useEffect(() => {
     (async () => {
       try {
         setLoading(true);
+        // First get the token, then use it to fetch story details
         const token = await generateToken();
         const data = await getDetails(token);
         setLoading(false);
         setData(data);
-        console.log('data: ', data);
       } catch (er) {
         setLoading(true);
         console.log('Caught an error loading the screen content: ', er);
@@ -60,6 +63,8 @@ const Home: React.FC<HomeProps> = props => {
     navigation.navigate('Details', data!);
   };
 
+  // Helper function to create user initials from full name
+  // Splits name by spaces and takes first letter of each word
   const getInitials = (name: string): string => {
     return name
       ?.split(' ')
@@ -80,15 +85,18 @@ const Home: React.FC<HomeProps> = props => {
           />
           <View style={styles.rowView}>
             <TextComponent text="Today" size={28} fontWeight="600" />
+            {/* Profile circle showing user initials */}
             <View style={styles.profile}>
               <TextComponent
-                text={getInitials(data?.userName!) || 'VS'}
+                text={getInitials(data?.userName!) || 'VS'} //Fallback to 'VS' if no username
                 size={20}
                 fontWeight="600"
               />
             </View>
           </View>
         </View>
+
+        {/* Main story card - shows thumbnail, title, and has refresh button */}
         <CustomCard
           logo={data?.logo!}
           pressable

@@ -23,10 +23,13 @@ const Details: React.FC<DetailsProps> = props => {
   const { logo, mainImage, subTitle, text, title, thumbNailImage } =
     route.params;
 
+  // Simple function to go back to the home screen
   const handleCancel = () => {
     navigation.goBack();
   };
 
+  // Had to clean up the HTML content since the API returns messy HTML
+  // This extracts just the body content and removes HTML tags
   const bodyContent = text.match(/<body[^>]*>([\s\S]*?)<\/body>/i)?.[1] || text;
 
   const paragraphs = bodyContent
@@ -36,24 +39,28 @@ const Details: React.FC<DetailsProps> = props => {
 
   return (
     <View style={styles.container}>
+      {/* Close button positioned at top right */}
       <TouchableOpacity onPress={handleCancel} style={styles.crossButton}>
         <TextComponent text="X" size={20} fontWeight="600" />
       </TouchableOpacity>
       <ScrollView bounces={false} showsVerticalScrollIndicator={false}>
+        {/* Reusing the same card component from home screen but making it full width */}
         <CustomCard
           logo={logo}
           subtitle={subTitle}
           thumbnail={thumbNailImage}
           fullWidth={true}
           title={title}
-          pressable={false}
+          pressable={false} // Disabled interaction since we're already on details page
         />
         <View style={styles.titleStyles}>
           <TextComponent text={title} color="#fff" size={24} fontWeight="700" />
         </View>
+        {/* Just a simple line separator */}
         <View style={styles.separator} />
         <View style={styles.detailsStyles}>
-          {/* The below code makes the first three words of the paragraph bold and adds some space  */}
+          {/* This part makes the first three words of each paragraph bold */}
+          {/* Thought it would look more professional this way */}
           {paragraphs.map((para: string, index: number) => {
             const words = para.split(/\s+/);
             const firstThree = words.slice(0, 3).join(' ');
@@ -92,7 +99,7 @@ const Details: React.FC<DetailsProps> = props => {
         <TouchableOpacity style={styles.shareStyles} activeOpacity={0.7}>
           <TextComponent text="Share Story" textAlign="center" />
         </TouchableOpacity>
-        <View style={{ height: screenHeight / 20 }} />
+        <View style={styles.extraSpace} />
       </ScrollView>
     </View>
   );
@@ -162,4 +169,5 @@ const styles = StyleSheet.create({
     gap: 10,
     paddingVertical: 20,
   },
+  extraSpace: { height: screenHeight / 20 },
 });
